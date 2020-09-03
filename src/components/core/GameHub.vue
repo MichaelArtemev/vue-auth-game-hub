@@ -44,6 +44,7 @@ export default {
   display: flex;
   color: #00aa9e;
   justify-content: center;
+  margin-top: 240px;
 }
 .game-hub__game {
   width: 350px;
@@ -78,5 +79,10 @@ export default {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+@media (max-height:781px){
+  .game-hub__games-row{
+    margin-top: 40px;
+  }
 }
 </style>

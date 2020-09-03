@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import MainAuth from '@/components/core/MainAuth'
 import Register from '@/components/Register'
 import GameHub from "@/components/core/GameHub"
+import NotFound from "@/components/core/404"
+import Snake from "@/components/core/Snake"
 
 Vue.use(Router)
 
@@ -12,10 +14,19 @@ let router = new Router({
       path: '/',
       name: 'MainAuth',
       component: MainAuth,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem("jwt")) {
+          next({
+            name: "GameHub"
+          });
+        } else {
+          next();
+        }
+      },
       meta: {
-              
+
       }
-    },    
+    },
     // {
     //     path: '/register',
     //     name: 'register',
@@ -31,6 +42,19 @@ let router = new Router({
       meta: {
         requiresAuth: true
       }
+    },
+    {
+      path: '/snake',
+      name: 'Snake',
+      component: Snake,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '*',
+      name: 'NotFound',
+      component: NotFound,
     },
   ]
 })
