@@ -35,7 +35,7 @@
               <h3>ДВЕ ПАРЫ</h3>
               <h3>ВАЛЕТЫ И СТАРШЕ</h3>
             </div>
-            <div class="poker__column column1 active">
+            <div ref="column1" class="poker__column column1 active">
               <h3>250</h3>
               <h3>50</h3>
               <h3>25</h3>
@@ -46,7 +46,7 @@
               <h3>2</h3>
               <h3>1</h3>
             </div>
-            <div class="poker__column column2">
+            <div ref="column2" class="poker__column column2">
               <h3>500</h3>
               <h3>100</h3>
               <h3>50</h3>
@@ -57,7 +57,7 @@
               <h3>4</h3>
               <h3>2</h3>
             </div>
-            <div class="poker__column column3">
+            <div ref="column3" class="poker__column column3">
               <h3>750</h3>
               <h3>150</h3>
               <h3>75</h3>
@@ -68,7 +68,7 @@
               <h3>6</h3>
               <h3>3</h3>
             </div>
-            <div class="poker__column column4">
+            <div ref="column4" class="poker__column column4">
               <h3>1000</h3>
               <h3>200</h3>
               <h3>100</h3>
@@ -79,7 +79,7 @@
               <h3>8</h3>
               <h3>4</h3>
             </div>
-            <div class="poker__column column5">
+            <div ref="column5" class="poker__column column5">
               <h3>4000</h3>
               <h3>250</h3>
               <h3>125</h3>
@@ -95,7 +95,7 @@
         <div class="poker__bet">
           <div class="poker__info-top">
             <h1>ЦЕНА ФИШКИ</h1>
-            <h1>${{coinPrice}}</h1>
+            <h1>${{coidDefault}}</h1>
           </div>
           <div class="poker__info-top">
             <h1>СТАВКА</h1>
@@ -128,9 +128,12 @@
         </div>
       </div>
       <div class="poker__btn-row">
-        <button class="btn-poker">ПОВЫСИТЬ</button>
+        <button @click="addCoin" class="btn-poker">ПОВЫСИТЬ</button>
         <button class="btn-poker">РАЗДАЧА</button>
         <h1>ДЕНЬГИ ${{money}}</h1>
+      </div>
+      <div class="poker__back">
+        <button @click="back" class="btn">BACK TO HUB</button>
       </div>
     </div>
   </div>
@@ -141,15 +144,66 @@ export default {
   data() {
     return {
       money: 12000,
+      coidDefault: 25,
       coinPrice: 25,
+      currentPrice: 1,
+      pokerColumn: [],
     };
+  },
+  mounted: function () {
+    //не смог придумать динамический сбор имени проблема с ref,поскольку мало элементов, решил просто в ручную
+    this.pokerColumn.push(this.$refs.column1);
+    this.pokerColumn.push(this.$refs.column2);
+    this.pokerColumn.push(this.$refs.column3);
+    this.pokerColumn.push(this.$refs.column4);
+    this.pokerColumn.push(this.$refs.column5);
+  },
+  methods: {
+    back: function () {
+      this.$router.push({ name: "GameHub" });
+    },
+    addCoin: function () {
+      console.log(this.pokerColumn[0]);
+
+      this.currentPrice++;
+      if (this.currentPrice >= 6) {
+        this.currentPrice = 1;
+      }
+      switch (this.currentPrice) {
+        case 1:
+          this.pokerColumn[4].classList.remove("active");
+          this.pokerColumn[0].classList.add("active");
+          this.coinPrice = 25;
+          break;
+        case 2:
+          this.coinPrice = 50;
+          this.pokerColumn[0].classList.remove("active");
+          this.pokerColumn[1].classList.add("active");
+          break;
+        case 3:
+          this.coinPrice = 75;
+          this.pokerColumn[1].classList.remove("active");
+          this.pokerColumn[2].classList.add("active");
+          break;
+        case 4:
+          this.coinPrice = 100;
+          this.pokerColumn[2].classList.remove("active");
+          this.pokerColumn[3].classList.add("active");
+          break;
+        case 5:
+          this.coinPrice = 125;
+          this.pokerColumn[3].classList.remove("active");
+          this.pokerColumn[4].classList.add("active");
+          break;
+      }
+    },
   },
 };
 </script>
 
 <style>
-.active{
-    background-color: #c23c00;
+.active {
+  background-color: #c23c00;
 }
 .poker__btn-row {
   margin-top: 20px;
@@ -158,12 +212,12 @@ export default {
   align-items: center;
 }
 .poker__btn-row h1 {
-    margin-left: 150px;
+  margin-left: 150px;
   color: #c22d19;
-    text-shadow: -3px 0 #eecd66, 0 3px #eecd66, 3px 0 #eecd66, 0 -3px #eecd66;  
+  text-shadow: -3px 0 #eecd66, 0 3px #eecd66, 3px 0 #eecd66, 0 -3px #eecd66;
 }
-.poker__btn-row button{
-    margin-left: 70px;
+.poker__btn-row button {
+  margin-left: 70px;
 }
 .poker__btn-hold {
   margin-bottom: 20px;
@@ -252,8 +306,8 @@ export default {
   border-right: 3px solid #f3ff5f;
   padding-right: 20px;
 }
-.poker__column.active{
-    color: #c23c00;
+.poker__column.active {
+  color: #c23c00;
 }
 .poker__column:not(:first-child) {
   text-align: end;
