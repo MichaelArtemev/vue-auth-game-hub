@@ -111,27 +111,27 @@
               disabled
               ref="btn1"
               class="poker__btn-hold btn-poker btn-1"
-            >ДЕРЖАТЬ</button>
+            >ЗАМЕНА</button>
             <!-- <img ref="card1" id="card1" src="../../img/hr.jpg" alt /> -->
             <div ref="card1" class="card-i card1"></div>
           </div>
           <div class="poker__card">
-            <button @click="holdCard" disabled ref="btn2" class="poker__btn-hold btn-poker btn-2">ДЕРЖАТЬ</button>
+            <button @click="holdCard" disabled ref="btn2" class="poker__btn-hold btn-poker btn-2">ЗАМЕНА</button>
             <!-- <img ref="card2" id="card2" src="../../img/hr.jpg" alt /> -->
             <div ref="card2" class="card-i card2"></div>
           </div>
           <div class="poker__card">
-            <button @click="holdCard" disabled ref="btn3" class="poker__btn-hold btn-poker btn-3">ДЕРЖАТЬ</button>
+            <button @click="holdCard" disabled ref="btn3" class="poker__btn-hold btn-poker btn-3">ЗАМЕНА</button>
             <!-- <img ref="card3" id="card3" src="../../img/hr.jpg" alt /> -->
             <div ref="card3" class="card-i card3"></div>
           </div>
           <div class="poker__card">
-            <button @click="holdCard" disabled ref="btn4" class="poker__btn-hold btn-poker btn-4">ДЕРЖАТЬ</button>
+            <button @click="holdCard" disabled ref="btn4" class="poker__btn-hold btn-poker btn-4">ЗАМЕНА</button>
             <!-- <img ref="card4" id="card4" src="../../img/hr.jpg" alt /> -->
             <div ref="card4" class="card-i card4"></div>
           </div>
           <div class="poker__card">
-            <button @click="holdCard" disabled ref="btn5" class="poker__btn-hold btn-poker btn-5">ДЕРЖАТЬ</button>
+            <button @click="holdCard" disabled ref="btn5" class="poker__btn-hold btn-poker btn-5">ЗАМЕНА</button>
             <!-- <img ref="card5" id="card5" src="../../img/hr.jpg" alt /> -->
             <div ref="card5" class="card-i card5"></div>
           </div>
@@ -186,69 +186,40 @@ export default {
     this.cards.push(this.$refs.card5);
   },
   methods: {
+      holdCardCheck: function(elemIndex,e){
+          if (e.target.classList.contains("selected")) {
+          e.target.classList.remove("selected");
+          this.cards[elemIndex].style.transform = "rotate(0)";
+          let index = this.selection.indexOf(this.currentDeck[elemIndex]);  
+          this.selection.splice(index, 1);        
+        } else {
+          this.cards[elemIndex].style.transform = "rotate(-15deg)";
+          this.selection.push(this.currentDeck[elemIndex]);
+          e.target.classList.add("selected");
+        }
+      },
+      resetDeg: function(){
+          for(let i = 0; i <= 4; i++){
+              this.cards[i].style.transform = "rotate(0deg)"
+          }
+      },
     holdCard: function (e) {            
       if (e.target.classList[2] === "btn-1") {
-        if (e.target.classList.contains("selected")) {
-          e.target.classList.remove("selected");
-          this.cards[0].style.transform = "rotate(0)";
-          let index = this.selection.indexOf(this.currentDeck[0]);  
-          this.selection.splice(index, 1);        
-        } else {
-          this.cards[0].style.transform = "rotate(-15deg)";
-          this.selection.push(this.currentDeck[0]);
-          e.target.classList.add("selected");
-        }
+          this.holdCardCheck(0,e)
       }
-      if (e.target.classList[2] === "btn-2") {
-        if (e.target.classList.contains("selected")) {
-          e.target.classList.remove("selected");
-          this.cards[1].style.transform = "rotate(0)";
-          let index = this.selection.indexOf(this.currentDeck[1]);  
-          this.selection.splice(index, 1);        
-        } else {
-          this.cards[1].style.transform = "rotate(-15deg)";
-          this.selection.push(this.currentDeck[1]);
-          e.target.classList.add("selected");
-        }
+       if (e.target.classList[2] === "btn-2") {
+          this.holdCardCheck(1,e)
       }
-      if (e.target.classList[2] === "btn-3") {
-        if (e.target.classList.contains("selected")) {
-          e.target.classList.remove("selected");
-          this.cards[2].style.transform = "rotate(0)";
-          let index = this.selection.indexOf(this.currentDeck[2]);  
-          this.selection.splice(index, 1);        
-        } else {
-          this.cards[2].style.transform = "rotate(-15deg)";
-          this.selection.push(this.currentDeck[2]);
-          e.target.classList.add("selected");
-        }
+       if (e.target.classList[2] === "btn-3") {
+          this.holdCardCheck(2,e)
       }
-      if (e.target.classList[2] === "btn-4") {
-        if (e.target.classList.contains("selected")) {
-          e.target.classList.remove("selected");
-          this.cards[3].style.transform = "rotate(0)";
-          let index = this.selection.indexOf(this.currentDeck[3]);  
-          this.selection.splice(index, 1);        
-        } else {
-          this.cards[3].style.transform = "rotate(-15deg)";
-          this.selection.push(this.currentDeck[3]);
-          e.target.classList.add("selected");
-        }
+       if (e.target.classList[2] === "btn-4") {
+          this.holdCardCheck(3,e)
       }
-      if (e.target.classList[2] === "btn-5") {
-        if (e.target.classList.contains("selected")) {
-          e.target.classList.remove("selected");
-          this.cards[4].style.transform = "rotate(0)";
-          let index = this.selection.indexOf(this.currentDeck[4]);  
-          this.selection.splice(index, 1);        
-        } else {
-          this.cards[4].style.transform = "rotate(-15deg)";
-          this.selection.push(this.currentDeck[4]);
-          e.target.classList.add("selected");
-        }
-      }
-      console.log(this.selection);
-      
+       if (e.target.classList[2] === "btn-5") {
+          this.holdCardCheck(4,e)
+      }        
+      console.log(this.selection);      
     },
     getDeck: function () {
       const cardSuit = [
@@ -353,7 +324,82 @@ export default {
         }
         this.phaseCheck = 1;
       } else {
-        alert(123);
+        alert(123);        
+        this.resetDeg();
+        let cardsClone = cardSuit.slice(0);
+        console.log(cardsClone);
+        let cardIndex = null;
+        let cardBlocks = 0;
+        console.log(this.currentDeck.length);
+        
+        for(let i = 0; i <= this.selection.length - 1; i++){
+            cardIndex = cardsClone.indexOf(this.selection[i]); 
+            let deckClear = this.currentDeck.indexOf(this.selection[i]);
+            cardsClone.splice(cardIndex,1); 
+            this.currentDeck.splice(deckClear,1);             
+            cardBlocks++;           
+                    
+        }
+        console.log(this.currentDeck);
+        console.log(this.currentDeck.length);
+        console.log("deck");
+        
+        let cardToHold = [];
+        
+        
+        if(cardBlocks != 0){
+            for(let i = 0; i <= 4; i++){
+                if(this.porekHoldButtons[i].classList.contains("selected")){
+                   cardToHold.push(this.porekHoldButtons[i].classList[2]);
+                }
+            }            
+        }
+        let lengthFix = this.currentDeck.length;
+        let result = 5 - lengthFix;
+        console.log(result);
+        for(let i = 0; i <= result - 1 ; i++){
+            let rnd = 0 - 0.5 + Math.random() * ((cardsClone.length - 1) - 0 + 1);
+            let average = Math.round(rnd);
+            this.currentDeck.push(cardsClone[average]);
+        }
+        
+
+        // for(let i = 0; i <= lengthFix; i++){
+        //     let rnd = 0 - 0.5 + Math.random() * ((cardsClone.length - 1) - 0 + 1);
+        //     let average = Math.round(rnd);
+        //     this.currentDeck.push(cardsClone[average]);
+        // }
+        // while(this.currentDeck.length < 5){
+        //     let rnd = 0 - 0.5 + Math.random() * ((cardsClone.length - 1) - 0 + 1);
+        //     let average = Math.round(rnd);
+        //     this.currentDeck.push(cardsClone[average]);
+        // }
+        console.log(this.currentDeck.length);
+        // console.log(cardsClone);
+        
+        // console.log(this.currentDeck);
+        for(let i = 0; i <= 4; i++){
+             this.cards[i].style.backgroundImage = `url('/static/cards/${this.currentDeck[i]}')`;
+        }
+        console.log(this.currentDeck);
+        
+        
+        // if(cardToHold.indexOf("btn-1") === -1){
+        //     this.cards[0].style.backgroundImage = `url('/static/cards/${this.currentDeck[0]}')`;
+        // }
+        // if(cardToHold.indexOf("btn-2") === -1){
+        //     this.cards[1].style.backgroundImage = `url('/static/cards/${this.currentDeck[1]}')`;
+        
+        // if(cardToHold.indexOf("btn-3") === -1){
+        //     this.cards[2].style.backgroundImage = `url('/static/cards/${this.currentDeck[2]}')`;
+        // }
+        // if(cardToHold.indexOf("btn-4") === -1){
+        //     this.cards[3].style.backgroundImage = `url('/static/cards/${this.currentDeck[3]}')`;
+        // }
+        // if(cardToHold.indexOf("btn-5") === -1){
+        //     this.cards[4].style.backgroundImage = `url('/static/cards/${this.currentDeck[4]}')`;
+        // }
+        
         this.phaseCheck = 0;
       }
     },
