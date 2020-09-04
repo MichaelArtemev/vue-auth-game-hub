@@ -106,30 +106,40 @@
       <div class="poker__cards">
         <div class="poker__cards-row">
           <div class="poker__card">
-            <button class="poker__btn-hold btn-poker btn-1">ДЕРЖАТЬ</button>
-            <img id="card1" src="../../img/hr.jpg" alt />
+            <button
+              @click="holdCard"
+              disabled
+              ref="btn1"
+              class="poker__btn-hold btn-poker btn-1"
+            >ДЕРЖАТЬ</button>
+            <!-- <img ref="card1" id="card1" src="../../img/hr.jpg" alt /> -->
+            <div ref="card1" class="card-i card1"></div>
           </div>
           <div class="poker__card">
-            <button class="poker__btn-hold btn-poker btn-2">ДЕРЖАТЬ</button>
-            <img id="card2" src="../../img/hr.jpg" alt />
+            <button @click="holdCard" disabled ref="btn2" class="poker__btn-hold btn-poker btn-2">ДЕРЖАТЬ</button>
+            <!-- <img ref="card2" id="card2" src="../../img/hr.jpg" alt /> -->
+            <div ref="card2" class="card-i card2"></div>
           </div>
           <div class="poker__card">
-            <button class="poker__btn-hold btn-poker btn-3">ДЕРЖАТЬ</button>
-            <img id="card3" src="../../img/hr.jpg" alt />
+            <button @click="holdCard" disabled ref="btn3" class="poker__btn-hold btn-poker btn-3">ДЕРЖАТЬ</button>
+            <!-- <img ref="card3" id="card3" src="../../img/hr.jpg" alt /> -->
+            <div ref="card3" class="card-i card3"></div>
           </div>
           <div class="poker__card">
-            <button class="poker__btn-hold btn-poker btn-4">ДЕРЖАТЬ</button>
-            <img id="card4" src="../../img/hr.jpg" alt />
+            <button @click="holdCard" disabled ref="btn4" class="poker__btn-hold btn-poker btn-4">ДЕРЖАТЬ</button>
+            <!-- <img ref="card4" id="card4" src="../../img/hr.jpg" alt /> -->
+            <div ref="card4" class="card-i card4"></div>
           </div>
           <div class="poker__card">
-            <button class="poker__btn-hold btn-poker btn-5">ДЕРЖАТЬ</button>
-            <img id="card5" src="../../img/hr.jpg" alt />
+            <button @click="holdCard" disabled ref="btn5" class="poker__btn-hold btn-poker btn-5">ДЕРЖАТЬ</button>
+            <!-- <img ref="card5" id="card5" src="../../img/hr.jpg" alt /> -->
+            <div ref="card5" class="card-i card5"></div>
           </div>
         </div>
       </div>
       <div class="poker__btn-row">
         <button @click="addCoin" class="btn-poker">ПОВЫСИТЬ</button>
-        <button class="btn-poker">РАЗДАЧА</button>
+        <button @click="getDeck" class="btn-poker">РАЗДАЧА</button>
         <h1>ДЕНЬГИ ${{money}}</h1>
       </div>
       <div class="poker__back">
@@ -148,6 +158,11 @@ export default {
       coinPrice: 25,
       currentPrice: 1,
       pokerColumn: [],
+      porekHoldButtons: [],
+      phaseCheck: 0,
+      selection: [],
+      cards: [],
+      currentDeck: null,
     };
   },
   mounted: function () {
@@ -157,8 +172,191 @@ export default {
     this.pokerColumn.push(this.$refs.column3);
     this.pokerColumn.push(this.$refs.column4);
     this.pokerColumn.push(this.$refs.column5);
+
+    this.porekHoldButtons.push(this.$refs.btn1);
+    this.porekHoldButtons.push(this.$refs.btn2);
+    this.porekHoldButtons.push(this.$refs.btn3);
+    this.porekHoldButtons.push(this.$refs.btn4);
+    this.porekHoldButtons.push(this.$refs.btn5);
+
+    this.cards.push(this.$refs.card1);
+    this.cards.push(this.$refs.card2);
+    this.cards.push(this.$refs.card3);
+    this.cards.push(this.$refs.card4);
+    this.cards.push(this.$refs.card5);
   },
   methods: {
+    holdCard: function (e) {            
+      if (e.target.classList[2] === "btn-1") {
+        if (e.target.classList.contains("selected")) {
+          e.target.classList.remove("selected");
+          this.cards[0].style.transform = "rotate(0)";
+          let index = this.selection.indexOf(this.currentDeck[0]);  
+          this.selection.splice(index, 1);        
+        } else {
+          this.cards[0].style.transform = "rotate(-15deg)";
+          this.selection.push(this.currentDeck[0]);
+          e.target.classList.add("selected");
+        }
+      }
+      if (e.target.classList[2] === "btn-2") {
+        if (e.target.classList.contains("selected")) {
+          e.target.classList.remove("selected");
+          this.cards[1].style.transform = "rotate(0)";
+          let index = this.selection.indexOf(this.currentDeck[1]);  
+          this.selection.splice(index, 1);        
+        } else {
+          this.cards[1].style.transform = "rotate(-15deg)";
+          this.selection.push(this.currentDeck[1]);
+          e.target.classList.add("selected");
+        }
+      }
+      if (e.target.classList[2] === "btn-3") {
+        if (e.target.classList.contains("selected")) {
+          e.target.classList.remove("selected");
+          this.cards[2].style.transform = "rotate(0)";
+          let index = this.selection.indexOf(this.currentDeck[2]);  
+          this.selection.splice(index, 1);        
+        } else {
+          this.cards[2].style.transform = "rotate(-15deg)";
+          this.selection.push(this.currentDeck[2]);
+          e.target.classList.add("selected");
+        }
+      }
+      if (e.target.classList[2] === "btn-4") {
+        if (e.target.classList.contains("selected")) {
+          e.target.classList.remove("selected");
+          this.cards[3].style.transform = "rotate(0)";
+          let index = this.selection.indexOf(this.currentDeck[3]);  
+          this.selection.splice(index, 1);        
+        } else {
+          this.cards[3].style.transform = "rotate(-15deg)";
+          this.selection.push(this.currentDeck[3]);
+          e.target.classList.add("selected");
+        }
+      }
+      if (e.target.classList[2] === "btn-5") {
+        if (e.target.classList.contains("selected")) {
+          e.target.classList.remove("selected");
+          this.cards[4].style.transform = "rotate(0)";
+          let index = this.selection.indexOf(this.currentDeck[4]);  
+          this.selection.splice(index, 1);        
+        } else {
+          this.cards[4].style.transform = "rotate(-15deg)";
+          this.selection.push(this.currentDeck[4]);
+          e.target.classList.add("selected");
+        }
+      }
+      console.log(this.selection);
+      
+    },
+    getDeck: function () {
+      const cardSuit = [
+        "1b.jpg",
+        "2b.jpg",
+        "3b.jpg",
+        "4b.jpg",
+        "5b.jpg",
+        "6b.jpg",
+        "7b.jpg",
+        "8b.jpg",
+        "9b.jpg",
+        "10b.jpg",
+        "11b.jpg",
+        "12b.jpg",
+        "13b.jpg",
+        "1h.jpg",
+        "2h.jpg",
+        "3h.jpg",
+        "4h.jpg",
+        "5h.jpg",
+        "6h.jpg",
+        "7h.jpg",
+        "8h.jpg",
+        "9h.jpg",
+        "10h.jpg",
+        "11h.jpg",
+        "12h.jpg",
+        "13h.jpg",
+        "1k.jpg",
+        "2k.jpg",
+        "3k.jpg",
+        "4k.jpg",
+        "5k.jpg",
+        "6k.jpg",
+        "7k.jpg",
+        "8k.jpg",
+        "9k.jpg",
+        "10k.jpg",
+        "11k.jpg",
+        "12k.jpg",
+        "13k.jpg",
+        "1t.jpg",
+        "2t.jpg",
+        "3t.jpg",
+        "4t.jpg",
+        "5t.jpg",
+        "6t.jpg",
+        "7t.jpg",
+        "8t.jpg",
+        "9t.jpg",
+        "10t.jpg",
+        "11t.jpg",
+        "12t.jpg",
+        "13t.jpg",
+      ];
+      //   const card1 = this.$refs.card1;
+      //   const card2 = this.$refs.card2;
+      //   const card3 = this.$refs.card3;
+      //   const card4 = this.$refs.card4;
+      //   const card5 = this.$refs.card5;
+
+      function randomInteger(min, max) {
+        let rand = min - 0.5 + Math.random() * (max - min + 1);
+        return Math.round(rand);
+      }
+      function getArr() {
+        let arr = [];
+        for (let i = 0; i <= 4; i++) {
+          let current = randomInteger(0, 51);
+          if (arr.indexOf(current) != -1) {
+            while (arr.indexOf(current) != -1) {
+              current = randomInteger(0, 51);
+            }
+          }
+
+          arr.push(current);
+        }
+        // return arr;
+        let iterator = 0;
+        let finalArr = [];
+        let deckCLone = cardSuit.slice(0);
+        while (iterator <= 4) {
+          finalArr.push(deckCLone[arr[iterator]]);
+          //   deckCLone.splice([arr[iterator]], 1);
+          iterator++;
+        }
+
+        return finalArr;
+      }
+
+      if (this.phaseCheck === 0) {
+        this.currentDeck = getArr();
+
+        for (let i = 1; i <= 5; i++) {
+          this.cards[i - 1].style.backgroundImage = `url('/static/cards/${
+            this.currentDeck[i - 1]
+          }')`;
+        }
+        for (let i = 0; i <= this.porekHoldButtons.length - 1; i++) {
+          this.porekHoldButtons[i].removeAttribute("disabled");
+        }
+        this.phaseCheck = 1;
+      } else {
+        alert(123);
+        this.phaseCheck = 0;
+      }
+    },
     back: function () {
       this.$router.push({ name: "GameHub" });
     },
@@ -202,6 +400,13 @@ export default {
 </script>
 
 <style>
+button:disabled {
+  text-decoration: line-through;
+}
+button:disabled:hover {
+  transform: scale(1);
+  background-color: #c3c6d9;
+}
 .active {
   background-color: #c23c00;
 }
@@ -233,6 +438,18 @@ export default {
 .poker__card img {
   max-width: 150px;
   max-height: 250px;
+}
+.card-i {
+  max-width: 150px;
+  width: 150px;
+  max-height: 250px;
+  height: 250px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url("../../img/hr.jpg");
+}
+.card1 {
+  /* background-image: url("../../img/cards/1b.jpg"); */
 }
 .btn-poker {
   background-color: #cacac0;
