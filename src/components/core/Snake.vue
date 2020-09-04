@@ -41,7 +41,6 @@ export default {
     move: function () {
       this.direct = this.directx;
       let body = this.body;
-      // бошка всегда внизу массива
       let head = this.body[this.length - 1];
 
       let headCell = head.map((value, index) => {

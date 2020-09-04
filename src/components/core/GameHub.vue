@@ -1,7 +1,9 @@
 <template>
   <div class="game-hub">
     <div class="game-hub__body">
-      <div class="game-hub__header"><Header /></div>
+      <div class="game-hub__header">
+        <Header />
+      </div>
       <div class="game-hub__games-row">
         <div class="game-hub__game-block">
           <a href="/snake">
@@ -9,6 +11,14 @@
               <div class="game-hub__curtain"></div>
             </div>
             <h1 class="game-hub__h1">ЗМЕЙКА</h1>
+          </a>
+        </div>
+         <div class="game-hub__game-block">
+          <a href="/poker">
+            <div class="game-hub__game poker">
+              <div class="game-hub__curtain"></div>
+            </div>
+            <h1 class="game-hub__h1">ПОКЕР</h1>
           </a>
         </div>
       </div>
@@ -20,26 +30,29 @@
 import Header from "../Header";
 export default {
   components: {
-    Header
+    Header,
   },
   data() {
     return {
-      userName: null
+      userName: null,
     };
   },
-  created: function() {
+  created: function () {
     this.getUserName();
   },
   methods: {
     getUserName() {
       let currentSessionName = JSON.parse(localStorage.user);
       this.userName = currentSessionName.name.toUpperCase();
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style>
+.poker{
+  background-image: url("../../img/poker.png");
+}
 .game-hub__games-row {
   display: flex;
   color: #00aa9e;
@@ -54,6 +67,10 @@ export default {
   background-repeat: no-repeat;
   position: relative;
   transition: 0.4s;
+  margin: 50px;
+}
+.game-hub__game:hover {
+  transform: rotate(-15deg);
 }
 .game-hub__curtain {
   position: absolute;
@@ -80,8 +97,8 @@ export default {
   background-repeat: no-repeat;
   background-size: cover;
 }
-@media (max-height:781px){
-  .game-hub__games-row{
+@media (max-height: 781px) {
+  .game-hub__games-row {
     margin-top: 40px;
   }
 }

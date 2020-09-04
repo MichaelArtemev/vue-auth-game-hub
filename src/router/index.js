@@ -5,6 +5,7 @@ import Register from '@/components/Register'
 import GameHub from "@/components/core/GameHub"
 import NotFound from "@/components/core/404"
 import Snake from "@/components/core/Snake"
+import Poker from "@/components/core/Poker"
 
 Vue.use(Router)
 
@@ -47,6 +48,14 @@ let router = new Router({
       path: '/snake',
       name: 'Snake',
       component: Snake,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/poker',
+      name: 'Poker',
+      component: Poker,
       meta: {
         requiresAuth: true
       }
