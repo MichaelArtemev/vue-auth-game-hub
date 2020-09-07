@@ -116,22 +116,42 @@
             <div ref="card1" class="card-i card1"></div>
           </div>
           <div class="poker__card">
-            <button @click="holdCard" disabled ref="btn2" class="poker__btn-hold btn-poker btn-2">ЗАМЕНА</button>
+            <button
+              @click="holdCard"
+              disabled
+              ref="btn2"
+              class="poker__btn-hold btn-poker btn-2"
+            >ЗАМЕНА</button>
             <!-- <img ref="card2" id="card2" src="../../img/hr.jpg" alt /> -->
             <div ref="card2" class="card-i card2"></div>
           </div>
           <div class="poker__card">
-            <button @click="holdCard" disabled ref="btn3" class="poker__btn-hold btn-poker btn-3">ЗАМЕНА</button>
+            <button
+              @click="holdCard"
+              disabled
+              ref="btn3"
+              class="poker__btn-hold btn-poker btn-3"
+            >ЗАМЕНА</button>
             <!-- <img ref="card3" id="card3" src="../../img/hr.jpg" alt /> -->
             <div ref="card3" class="card-i card3"></div>
           </div>
           <div class="poker__card">
-            <button @click="holdCard" disabled ref="btn4" class="poker__btn-hold btn-poker btn-4">ЗАМЕНА</button>
+            <button
+              @click="holdCard"
+              disabled
+              ref="btn4"
+              class="poker__btn-hold btn-poker btn-4"
+            >ЗАМЕНА</button>
             <!-- <img ref="card4" id="card4" src="../../img/hr.jpg" alt /> -->
             <div ref="card4" class="card-i card4"></div>
           </div>
           <div class="poker__card">
-            <button @click="holdCard" disabled ref="btn5" class="poker__btn-hold btn-poker btn-5">ЗАМЕНА</button>
+            <button
+              @click="holdCard"
+              disabled
+              ref="btn5"
+              class="poker__btn-hold btn-poker btn-5"
+            >ЗАМЕНА</button>
             <!-- <img ref="card5" id="card5" src="../../img/hr.jpg" alt /> -->
             <div ref="card5" class="card-i card5"></div>
           </div>
@@ -150,6 +170,9 @@
 </template>
 
 <script>
+import { cardSuites } from "../../js/data/pokerConsts.js";
+import { findPairs } from "../../js/pokerAlgoritms.js";
+
 export default {
   data() {
     return {
@@ -166,121 +189,54 @@ export default {
     };
   },
   mounted: function () {
-    //не смог придумать динамический сбор имени проблема с ref,поскольку мало элементов, решил просто в ручную
-    this.pokerColumn.push(this.$refs.column1);
-    this.pokerColumn.push(this.$refs.column2);
-    this.pokerColumn.push(this.$refs.column3);
-    this.pokerColumn.push(this.$refs.column4);
-    this.pokerColumn.push(this.$refs.column5);
-
-    this.porekHoldButtons.push(this.$refs.btn1);
-    this.porekHoldButtons.push(this.$refs.btn2);
-    this.porekHoldButtons.push(this.$refs.btn3);
-    this.porekHoldButtons.push(this.$refs.btn4);
-    this.porekHoldButtons.push(this.$refs.btn5);
-
-    this.cards.push(this.$refs.card1);
-    this.cards.push(this.$refs.card2);
-    this.cards.push(this.$refs.card3);
-    this.cards.push(this.$refs.card4);
-    this.cards.push(this.$refs.card5);
+    for (let i = 1; i <= 5; i++) {
+      this.porekHoldButtons.push(eval("this.$refs.btn" + i));
+    }
+    for (let i = 1; i <= 5; i++) {
+      this.pokerColumn.push(eval("this.$refs.column" + i));
+    }
+    for (let i = 1; i <= 5; i++) {
+      this.cards.push(eval("this.$refs.card" + i));
+    }
   },
   methods: {
-      holdCardCheck: function(elemIndex,e){
-          if (e.target.classList.contains("selected")) {
-          e.target.classList.remove("selected");
-          this.cards[elemIndex].style.transform = "rotate(0)";
-          let index = this.selection.indexOf(this.currentDeck[elemIndex]);  
-          this.selection.splice(index, 1);        
-        } else {
-          this.cards[elemIndex].style.transform = "rotate(-15deg)";
-          this.selection.push(this.currentDeck[elemIndex]);
-          e.target.classList.add("selected");
-        }
-      },
-      resetDeg: function(){
-          for(let i = 0; i <= 4; i++){
-              this.cards[i].style.transform = "rotate(0deg)"
-          }
-      },
-    holdCard: function (e) {            
+    holdCardCheck: function (elemIndex, e) {
+      if (e.target.classList.contains("selected")) {
+        e.target.classList.remove("selected");
+        this.cards[elemIndex].style.transform = "rotate(0)";
+        let index = this.selection.indexOf(this.currentDeck[elemIndex]);
+        this.selection.splice(index, 1);
+      } else {
+        this.cards[elemIndex].style.transform = "rotate(-15deg)";
+        this.selection.push(this.currentDeck[elemIndex]);
+        e.target.classList.add("selected");
+      }
+    },
+    resetDeg: function () {
+      for (let i = 0; i <= 4; i++) {
+        this.cards[i].style.transform = "rotate(0deg)";
+      }
+    },
+    holdCard: function (e) {
       if (e.target.classList[2] === "btn-1") {
-          this.holdCardCheck(0,e)
+        this.holdCardCheck(0, e);
       }
-       if (e.target.classList[2] === "btn-2") {
-          this.holdCardCheck(1,e)
+      if (e.target.classList[2] === "btn-2") {
+        this.holdCardCheck(1, e);
       }
-       if (e.target.classList[2] === "btn-3") {
-          this.holdCardCheck(2,e)
+      if (e.target.classList[2] === "btn-3") {
+        this.holdCardCheck(2, e);
       }
-       if (e.target.classList[2] === "btn-4") {
-          this.holdCardCheck(3,e)
+      if (e.target.classList[2] === "btn-4") {
+        this.holdCardCheck(3, e);
       }
-       if (e.target.classList[2] === "btn-5") {
-          this.holdCardCheck(4,e)
-      }        
-      console.log(this.selection);      
+      if (e.target.classList[2] === "btn-5") {
+        this.holdCardCheck(4, e);
+      }
+      console.log(this.selection);
     },
     getDeck: function () {
-      const cardSuit = [
-        "1b.jpg",
-        "2b.jpg",
-        "3b.jpg",
-        "4b.jpg",
-        "5b.jpg",
-        "6b.jpg",
-        "7b.jpg",
-        "8b.jpg",
-        "9b.jpg",
-        "10b.jpg",
-        "11b.jpg",
-        "12b.jpg",
-        "13b.jpg",
-        "1h.jpg",
-        "2h.jpg",
-        "3h.jpg",
-        "4h.jpg",
-        "5h.jpg",
-        "6h.jpg",
-        "7h.jpg",
-        "8h.jpg",
-        "9h.jpg",
-        "10h.jpg",
-        "11h.jpg",
-        "12h.jpg",
-        "13h.jpg",
-        "1k.jpg",
-        "2k.jpg",
-        "3k.jpg",
-        "4k.jpg",
-        "5k.jpg",
-        "6k.jpg",
-        "7k.jpg",
-        "8k.jpg",
-        "9k.jpg",
-        "10k.jpg",
-        "11k.jpg",
-        "12k.jpg",
-        "13k.jpg",
-        "1t.jpg",
-        "2t.jpg",
-        "3t.jpg",
-        "4t.jpg",
-        "5t.jpg",
-        "6t.jpg",
-        "7t.jpg",
-        "8t.jpg",
-        "9t.jpg",
-        "10t.jpg",
-        "11t.jpg",
-        "12t.jpg",
-        "13t.jpg",
-      ];
-      //   const card1 = this.$refs.card1;
-      //   const card2 = this.$refs.card2;
-      //   const card3 = this.$refs.card3;
-      //   const card4 = this.$refs.card4;
-      //   const card5 = this.$refs.card5;
+      const cardSuit = cardSuites;
 
       function randomInteger(min, max) {
         let rand = min - 0.5 + Math.random() * (max - min + 1);
@@ -298,13 +254,11 @@ export default {
 
           arr.push(current);
         }
-        // return arr;
         let iterator = 0;
         let finalArr = [];
         let deckCLone = cardSuit.slice(0);
         while (iterator <= 4) {
           finalArr.push(deckCLone[arr[iterator]]);
-          //   deckCLone.splice([arr[iterator]], 1);
           iterator++;
         }
 
@@ -324,45 +278,36 @@ export default {
         }
         this.phaseCheck = 1;
       } else {
-        alert(123);        
+        alert(123);
         this.resetDeg();
         let cardsClone = cardSuit.slice(0);
-        console.log(cardsClone);
         let cardIndex = null;
         let cardBlocks = 0;
-        console.log(this.currentDeck.length);
-        
-        for(let i = 0; i <= this.selection.length - 1; i++){
-            cardIndex = cardsClone.indexOf(this.selection[i]); 
-            let deckClear = this.currentDeck.indexOf(this.selection[i]);
-            cardsClone.splice(cardIndex,1); 
-            this.currentDeck.splice(deckClear,1);             
-            cardBlocks++;           
-                    
+
+        for (let i = 0; i <= this.selection.length - 1; i++) {
+          cardIndex = cardsClone.indexOf(this.selection[i]);
+          let deckClear = this.currentDeck.indexOf(this.selection[i]);
+          cardsClone.splice(cardIndex, 1);
+          this.currentDeck.splice(deckClear, 1);
+          cardBlocks++;
         }
-        console.log(this.currentDeck);
-        console.log(this.currentDeck.length);
-        console.log("deck");
-        
+
         let cardToHold = [];
-        
-        
-        if(cardBlocks != 0){
-            for(let i = 0; i <= 4; i++){
-                if(this.porekHoldButtons[i].classList.contains("selected")){
-                   cardToHold.push(this.porekHoldButtons[i].classList[2]);
-                }
-            }            
+
+        if (cardBlocks != 0) {
+          for (let i = 0; i <= 4; i++) {
+            if (this.porekHoldButtons[i].classList.contains("selected")) {
+              cardToHold.push(this.porekHoldButtons[i].classList[2]);
+            }
+          }
         }
         let lengthFix = this.currentDeck.length;
         let result = 5 - lengthFix;
-        console.log(result);
-        for(let i = 0; i <= result - 1 ; i++){
-            let rnd = 0 - 0.5 + Math.random() * ((cardsClone.length - 1) - 0 + 1);
-            let average = Math.round(rnd);
-            this.currentDeck.push(cardsClone[average]);
+        for (let i = 0; i <= result - 1; i++) {
+          let rnd = 0 - 0.5 + Math.random() * (cardsClone.length - 1 - 0 + 1);
+          let average = Math.round(rnd);
+          this.currentDeck.push(cardsClone[average]);
         }
-        
 
         // for(let i = 0; i <= lengthFix; i++){
         //     let rnd = 0 - 0.5 + Math.random() * ((cardsClone.length - 1) - 0 + 1);
@@ -374,22 +319,37 @@ export default {
         //     let average = Math.round(rnd);
         //     this.currentDeck.push(cardsClone[average]);
         // }
-        console.log(this.currentDeck.length);
-        // console.log(cardsClone);
-        
+
         // console.log(this.currentDeck);
-        for(let i = 0; i <= 4; i++){
-             this.cards[i].style.backgroundImage = `url('/static/cards/${this.currentDeck[i]}')`;
+        for (let i = 0; i <= 4; i++) {
+          this.cards[
+            i
+          ].style.backgroundImage = `url('/static/cards/${this.currentDeck[i]}')`;
         }
-        console.log(this.currentDeck);
+        findPairs(this.currentDeck);
+
+
         
-        
+        // switch (this.currentDeck) {
+        //   case 3:
+        //     alert("Маловато");
+        //     break;
+        //   case 4:
+        //     alert("В точку!");
+        //     break;
+        //   case 5:
+        //     alert("Перебор");
+        //     break;
+        //   default:
+        //     alert("Нет таких значений");
+        // }
+
         // if(cardToHold.indexOf("btn-1") === -1){
         //     this.cards[0].style.backgroundImage = `url('/static/cards/${this.currentDeck[0]}')`;
         // }
         // if(cardToHold.indexOf("btn-2") === -1){
         //     this.cards[1].style.backgroundImage = `url('/static/cards/${this.currentDeck[1]}')`;
-        
+
         // if(cardToHold.indexOf("btn-3") === -1){
         //     this.cards[2].style.backgroundImage = `url('/static/cards/${this.currentDeck[2]}')`;
         // }
@@ -399,7 +359,7 @@ export default {
         // if(cardToHold.indexOf("btn-5") === -1){
         //     this.cards[4].style.backgroundImage = `url('/static/cards/${this.currentDeck[4]}')`;
         // }
-        
+
         this.phaseCheck = 0;
       }
     },
@@ -407,8 +367,6 @@ export default {
       this.$router.push({ name: "GameHub" });
     },
     addCoin: function () {
-      console.log(this.pokerColumn[0]);
-
       this.currentPrice++;
       if (this.currentPrice >= 6) {
         this.currentPrice = 1;
