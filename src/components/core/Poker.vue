@@ -101,6 +101,13 @@
             <h1>СТАВКА</h1>
             <h1>${{coinPrice}}</h1>
           </div>
+          <div class="poker__info-top">
+            <h1>ВЫИГРЫШ</h1>
+            <h1>${{currentWinMoney}}</h1>
+            <h4>фишек = {{this.currentPrice}}</h4>
+            <h4>комбо</h4>
+            <h4>${{currentCombo}}</h4>
+          </div>
         </div>
       </div>
       <div class="poker__cards">
@@ -158,8 +165,8 @@
         </div>
       </div>
       <div class="poker__btn-row">
-        <button @click="addCoin" class="btn-poker">ПОВЫСИТЬ</button>
-        <button @click="getDeck" class="btn-poker">РАЗДАЧА</button>
+        <button ref="upPriceBtn" @click="addCoin" class="btn-poker">ПОВЫСИТЬ</button>
+        <button ref='btnGetDeck' @click="getDeck" class="btn-poker poker-main-btn">{{currentAction}}</button>
         <h1>ДЕНЬГИ ${{money}}</h1>
       </div>
       <div class="poker__back">
@@ -171,7 +178,8 @@
 
 <script>
 import { cardSuites } from "../../js/data/pokerConsts.js";
-import { findPairs } from "../../js/pokerAlgoritms.js";
+import { getResult } from "../../js/pokerAlgoritms.js";
+import { getMoney } from "../../js/pokerAlgoritms.js";
 
 export default {
   data() {
@@ -186,6 +194,9 @@ export default {
       selection: [],
       cards: [],
       currentDeck: null,
+      currentWinMoney: 0,
+      currentCombo: null,
+      currentAction: "РАЗДАЧА",
     };
   },
   mounted: function () {
@@ -235,6 +246,10 @@ export default {
       }
       console.log(this.selection);
     },
+    /**
+     * Генерирует 5 карт для руки, вырезает выбранные карты. взаимодействует с интерфейсом отдавая
+     * информацию о текущих результатах и проверяет комбинацию на выигрышь.
+     */
     getDeck: function () {
       const cardSuit = cardSuites;
 
@@ -242,8 +257,10 @@ export default {
         let rand = min - 0.5 + Math.random() * (max - min + 1);
         return Math.round(rand);
       }
+      // возвращает массив из 5 карт
       function getArr() {
         let arr = [];
+
         for (let i = 0; i <= 4; i++) {
           let current = randomInteger(0, 51);
           if (arr.indexOf(current) != -1) {
@@ -261,11 +278,12 @@ export default {
           finalArr.push(deckCLone[arr[iterator]]);
           iterator++;
         }
-
         return finalArr;
       }
-
+      //первая фаза отрисовки
       if (this.phaseCheck === 0) {
+        this.$refs.btnGetDeck.style.backgroundColor = "yellow";
+        this.selection = [];
         this.currentDeck = getArr();
 
         for (let i = 1; i <= 5; i++) {
@@ -273,13 +291,44 @@ export default {
             this.currentDeck[i - 1]
           }')`;
         }
+        for(let i = 0; i <= 4; i++){
+          this.porekHoldButtons[i].classList.remove("selected");
+        }
         for (let i = 0; i <= this.porekHoldButtons.length - 1; i++) {
           this.porekHoldButtons[i].removeAttribute("disabled");
         }
         this.phaseCheck = 1;
+
+        switch (this.currentPrice) {
+          case 1:
+            this.money -= 25;
+            break;
+          case 2:
+            this.money -= 50;
+            break;
+          case 3:
+            this.money -= 75;
+            break;
+          case 4:
+            this.money -= 100;
+            break;
+          case 5:
+            this.money -= 125;
+            break;
+          default:
+            alert("Нет таких значений");
+        }
+        this.$refs.upPriceBtn.setAttribute("disabled", "disabled");
+        this.currentAction = "РАЗДАЧА";
       } else {
-        alert(123);
+        //вторая фаза отрисовки        
         this.resetDeg();
+        this.$refs.upPriceBtn.removeAttribute('disabled');
+        for (let i = 0; i <= this.porekHoldButtons.length - 1; i++) {
+          this.porekHoldButtons[i].setAttribute("disabled", "disabled");
+        }
+        this.currentAction = "НОВАЯ ИГРА";
+        this.$refs.btnGetDeck.style.backgroundColor = "green";
         let cardsClone = cardSuit.slice(0);
         let cardIndex = null;
         let cardBlocks = 0;
@@ -293,7 +342,7 @@ export default {
         }
 
         let cardToHold = [];
-
+        //проверят наличие выбранных карт и добавляет их в массив выбранных карт
         if (cardBlocks != 0) {
           for (let i = 0; i <= 4; i++) {
             if (this.porekHoldButtons[i].classList.contains("selected")) {
@@ -308,59 +357,23 @@ export default {
           let average = Math.round(rnd);
           this.currentDeck.push(cardsClone[average]);
         }
-
-        // for(let i = 0; i <= lengthFix; i++){
-        //     let rnd = 0 - 0.5 + Math.random() * ((cardsClone.length - 1) - 0 + 1);
-        //     let average = Math.round(rnd);
-        //     this.currentDeck.push(cardsClone[average]);
-        // }
-        // while(this.currentDeck.length < 5){
-        //     let rnd = 0 - 0.5 + Math.random() * ((cardsClone.length - 1) - 0 + 1);
-        //     let average = Math.round(rnd);
-        //     this.currentDeck.push(cardsClone[average]);
-        // }
-
-        // console.log(this.currentDeck);
         for (let i = 0; i <= 4; i++) {
           this.cards[
             i
           ].style.backgroundImage = `url('/static/cards/${this.currentDeck[i]}')`;
         }
-        findPairs(this.currentDeck);
+        //клон для убийства обсервера
+        let arrToPipe = this.currentDeck.slice();
+        let res = getResult(arrToPipe);
+        let moneyWin = getMoney(res[0], this.currentPrice);
+        this.money += moneyWin;
+        this.currentCombo = res[1];
+        this.currentWinMoney = moneyWin;
+        console.log(res[0]);
+        console.log(res[1]);
 
-
-        
-        // switch (this.currentDeck) {
-        //   case 3:
-        //     alert("Маловато");
-        //     break;
-        //   case 4:
-        //     alert("В точку!");
-        //     break;
-        //   case 5:
-        //     alert("Перебор");
-        //     break;
-        //   default:
-        //     alert("Нет таких значений");
-        // }
-
-        // if(cardToHold.indexOf("btn-1") === -1){
-        //     this.cards[0].style.backgroundImage = `url('/static/cards/${this.currentDeck[0]}')`;
-        // }
-        // if(cardToHold.indexOf("btn-2") === -1){
-        //     this.cards[1].style.backgroundImage = `url('/static/cards/${this.currentDeck[1]}')`;
-
-        // if(cardToHold.indexOf("btn-3") === -1){
-        //     this.cards[2].style.backgroundImage = `url('/static/cards/${this.currentDeck[2]}')`;
-        // }
-        // if(cardToHold.indexOf("btn-4") === -1){
-        //     this.cards[3].style.backgroundImage = `url('/static/cards/${this.currentDeck[3]}')`;
-        // }
-        // if(cardToHold.indexOf("btn-5") === -1){
-        //     this.cards[4].style.backgroundImage = `url('/static/cards/${this.currentDeck[4]}')`;
-        // }
-
-        this.phaseCheck = 0;
+        console.log(moneyWin);
+        this.phaseCheck = 0;        
       }
     },
     back: function () {
@@ -404,6 +417,7 @@ export default {
 </script>
 
 <style>
+
 button:disabled {
   text-decoration: line-through;
 }
